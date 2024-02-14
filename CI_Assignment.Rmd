@@ -1,0 +1,77 @@
+---
+title: "CI-assignment"
+author: "TANG"
+date: "2024-02-12"
+output: word_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+# have a look at data
+```{r}
+library(readr)
+df <- read.csv("framingham_assignment.csv")
+```
+
+# Week1:Formulate the research question for your assignment in two different ways.
+
+## In words
+We are asked to estimate the causal effect of cigarette smoking (CURSMOKE) on the risk of Stroke (STROKE).
+
+## Using the potential outcome notation
+Y observed outcome (dependent variable) in this case is the status of Stroke,i.e.
+```{r}
+Y <- df$STROKE
+table(Y)
+```
+We can see the summary of the status of Stroke is 4019 individuals are not, while 415 individuals are in stroke situation.
+
+X observed exposure in this case is the Variables in the dataset measured during the first examination period, which is CURSMOKE (Current cigarette smoking ,0=Not current smoker),i.e.
+```{r}
+X <- df$CURSMOKE
+table(X)
+```
+We can see the summary that is 2253 individuals are not current smokers, while 2181 individuals are current smokers.
+
+subset our observed outcome Y(STROKE) and observed exposure X(CURSMOKE) as follow:
+```{r}
+selected_columns <- c("RANDID", "CURSMOKE", "STROKE")
+df_selected <- df[, selected_columns]
+```
+we can have a short overview of it:
+```{r}
+head(df_selected)
+```
+
+# Week2: Formulate the first 6 key items of a protocol for a target trial
+
+## 1. Eligibility criteria
+people in the community of Framingham, Massachusetts.
+
+## 2. Exposure definition
+In this study the binary exposure is serious current cigarette smoking (yes/no).
+
+## 3. Assignment procedures
+there is no randomization here.
+
+## 4. Follow-up period
+Each participant was followed for a total of 24 years.
+
+## 5. Outcome definition
+STROKE is the outcome of interest.
+
+## 6. Causal contrast of interest
+A causal contrast of interest could be E(Y(1))- E(Y(0)). As Y is binary, this is a risk difference (because E(Y(1)) = the probability that Y(1)). This is the difference between the risk of stroke within 24 years whose current status is yes versus the risk of whose current status is no.
+```{r}
+library(dplyr)
+Y_1 <- filter(df_selected,CURSMOKE == 1)
+Y_0 <- filter(df_selected,CURSMOKE == 0)
+causal_contrast <- mean(Y_1$STROKE) - mean(Y_0$STROKE) 
+causal_contrast
+```
+
+
+
+
+
